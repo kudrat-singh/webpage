@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>For My Sugarplum 💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#100618; --card:#1c0f20; --accent:#ff4d7a; --muted:#d2a0b8; --glass: rgba(255,255,255,0.03)
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui;
+    background:linear-gradient(180deg,#100618 0%, #1d0730 100%);
+    color:#fff;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px
+  }
+  .stage{
+    width:100%;max-width:680px;background:var(--glass);
+    border-radius:16px;padding:28px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  }
+
+  /* Gate */
+  #gate{display:flex;flex-direction:column;align-items:center;gap:10px}
+  h2{margin:6px 0;font-family:'Playfair Display',serif;color:var(--accent)}
+  .input{
+    padding:12px 14px;border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:rgba(255,255,255,0.05);
+    color:inherit;width:260px;text-align:center
+  }
+  .input:focus{
+    outline:none;border-color:var(--accent);
+    background:rgba(255,255,255,0.08)
+  }
+  .btn{
+    padding:10px 18px;border-radius:10px;border:none;
+    background:linear-gradient(90deg,var(--accent),#ff7aa0);
+    color:#111;font-weight:700;cursor:pointer;
+    transition:0.25s
+  }
+  .btn:hover{transform:scale(1.05)}
+  #emoji{font-size:36px;margin-top:12px}
+
+  /* main page */
+  #main{display:none;opacity:0;transform:translateY(12px);transition:all .6s}
+  .title{
+    font-family:'Playfair Display',serif;font-size:34px;color:var(--accent);
+  }
+  .subtitle{margin-top:6px;color:var(--muted)}
+  .letter{white-space:pre-wrap;font-size:16px;line-height:1.6;color:#fbe9f1}
+  .letterBox{background:rgba(255,255,255,0.05);padding:18px;border-radius:12px}
+</style>
+</head>
+
+<body>
+<div class="stage">
+
+  <!-- GATE -->
+  <div id="gate">
+    <h2>Do you love me? 💗</h2>
+    <input id="ans3" class="input" placeholder="Yes or No">
+    <button id="loveSubmit" class="btn" style="margin-top:12px">Submit</button>
+    <div id="emoji"></div>
+  </div>
+
+  <!-- MAIN PAGE -->
+  <div id="main">
+    <div class="title" id="titleEl">To my forever</div>
+    <div class="subtitle">For <b>Ambika Dutta</b> • Since 14 Jan 2025</div>
+
+    <div class="letterBox">
+      <div id="letterText" class="letter"></div>
+      <div class="signature" style="font-family:'Playfair Display';font-size:22px;color:var(--accent);margin-top:18px">
+        — Your Kudrat
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const qs = id => document.getElementById(id);
+const sanitize = v => String(v||"").trim().toLowerCase();
+
+/* Gate question */
+qs("loveSubmit").onclick = function(){
+  const love = sanitize(qs("ans3").value);
+  if(love === "yes"){
+    qs("emoji").textContent = "🥰❤️";
+    setTimeout(showLetter, 500);
+  } else if(love === "no"){
+    qs("emoji").textContent = "💔🥀";
+  }
+}
+
+/* Show main letter instantly */
+function showLetter(){
+  qs("gate").style.display = "none";
+  qs("main").style.display = "block";
+  qs("main").style.opacity = 1;
+  qs("letterText").textContent = `Hey Ambika ❤️
+
+Today is 14th November 2025, and we’ve been 10 months together… no nazar at all 😘. I love you so much, Ambika. There hasn’t been a single day I didn’t think about you, or a single night that ended without our sweet (sometimes spicy!) conversations.
+
+The day you entered my life, everything changed. My world, once black and white, suddenly became colourful and full of joy ✨. Yes, we argue sometimes, we step on the wrong foot—but these are just tiny parts of life. My feelings for you are even stronger than day one 💖.
+
+You’re my last thought before sleeping and my first thought when I wake up. I know we’re in an important phase of life, and maybe I shouldn’t wish you today, but I couldn’t resist. I wanted to make you feel special… and tell you how much you mean to me 🫶.
+
+I know exams are coming, so I don’t want to distract you. This is just a small gesture—a thank you for everything: for being in my life, for making me feel lucky, for making me happy every single day. You deserve all the good things in this world, Ambika. And I’m ready to give you mine ❤️.
+
+I always want you to be happy. I know sometimes I make you sad or anxious, and I’m genuinely sorry 💔. But my love for you is pure and true. Your place in my heart will never change—Ambika Dutta owns it completely ❤️‍🔥.
+
+Even if things get tough, my feelings will never fade. I’ll support you, motivate you, and stand by you always. I trust you completely, because I know you’ll keep my heart safe too.
+
+These were just 10 months, Ambika… we have a long, beautiful journey ahead: to grow, to love, to achieve, and to stay together. I’ll wait for you, no matter how long it takes.
+
+I love you so much, my forever… my bsf 💞👩‍❤️‍👨✨
+
+— Your Kudrat`;
+}
+</script>
+</body>
+</html>
