@@ -1,3 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>For My Sugarplum 💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#100618; --accent:#ff4d7a; --muted:#d2a0b8
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background:linear-gradient(180deg,#100618 0%, #1d0730 100%);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  text-align:center;
+}
+.stage{width:100%;max-width:680px;}
+h2{margin:6px 0;font-family:'Playfair Display',serif;color:var(--accent)}
+p{font-size:18px; line-height:1.6;}
+.btn{
+  padding:10px 18px;border-radius:10px;border:none;
+  background:linear-gradient(90deg,var(--accent),#ff7aa0);
+  color:#111;font-weight:700;cursor:pointer;
+  transition:0.25s;margin-top:20px;
+}
+.btn:hover{transform:scale(1.05)}
+.input{
+  padding:12px 14px;border-radius:10px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.05);
+  color:inherit;width:260px;text-align:center;
+  margin-top:12px;
+}
+
+/* Main page */
+#main{display:none;opacity:0;transition:opacity .5s}
+.title{font-family:'Playfair Display',serif;font-size:34px;color:var(--accent);}
+.subtitle{margin-top:6px;color:var(--muted)}
+.letter{white-space:pre-wrap;font-size:16px;line-height:1.6;color:#fbe9f1}
+.letterBox{background:rgba(255,255,255,0.05);padding:18px;border-radius:12px;margin-top:20px}
+
+/* Envelope animation */
+#envelope{
+  width:200px; height:120px; margin:40px auto;
+  background:linear-gradient(145deg,#ff4d7a,#ff7aa0);
+  border-radius:6px; position:relative; cursor:pointer;
+  overflow:hidden; display:none;
+}
+#envelope:before{
+  content:""; position:absolute; top:0; left:0; width:0; height:0;
+  border-left:100px solid transparent;
+  border-right:100px solid transparent;
+  border-bottom:60px solid #ff4d7a;
+  transition:all 1s ease;
+}
+#envelope.open:before{transform:translateY(-60px); opacity:0}
+
+/* Final Q&A */
+#finalQA{display:none; margin-top:20px;}
+#finalEmoji{font-size:48px; margin-top:12px;}
+</style>
+</head>
+
+<body>
+<div class="stage">
+
+  <!-- Intro page -->
+  <div id="intro">
+    <p>I WANTED TO SAY YOU SOMETHING SINCE A LONG TIME BUT I WAS NOT ABLE TO GATHER THE COURAGE<br><b>ARE YOU READY FOR IT?</b></p>
+    <button id="startBtn" class="btn">Yes, I’m ready!</button>
+  </div>
+
+  <!-- Gate -->
+  <div id="gate" style="display:none">
+    <h2>Do you love me? 💗</h2>
+    <input id="ans3" class="input" placeholder="Yes or No">
+    <button id="loveSubmit" class="btn">Submit</button>
+    <div id="emoji"></div>
+  </div>
+
+  <!-- Envelope animation -->
+  <div id="envelope"></div>
+
+  <!-- Main letter -->
+  <div id="main">
+    <div class="title" id="titleEl">To my forever</div>
+    <div class="subtitle">For <b>Ambika Dutta</b> • Since 14 Jan 2025</div>
+
+    <div class="letterBox">
+      <div id="letterText" class="letter"></div>
+      <div class="signature" style="font-family:'Playfair Display';font-size:22px;color:var(--accent);margin-top:18px">
+        — Your Kudrat
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Q&A -->
+  <div id="finalQA">
+    <h2>Will you be mine forever 🥹</h2>
+    <button id="yesForever" class="btn">Yes 🥰❤️</button>
+    <div id="finalEmoji"></div>
+    <audio id="finalSong" src="final_song.mp3"></audio>
+  </div>
+
+  <!-- Background song -->
+  <audio id="bgSong" src="background_song.mp3" autoplay loop></audio>
+
+</div>
+
 <script>
 const qs = id => document.getElementById(id);
 const sanitize = v => String(v||"").trim().toLowerCase();
@@ -75,7 +192,7 @@ function showFinalQA(){
   }
 }
 
-/* Function to fade out old song and fade in new song */
+/* Fade out old song and fade in new song */
 function fadeSongs(oldSong, newSong){
   let vol = oldSong.volume;
   const fadeOut = setInterval(()=>{
@@ -101,3 +218,5 @@ function fadeSongs(oldSong, newSong){
   }, 100);
 }
 </script>
+</body>
+</html>
