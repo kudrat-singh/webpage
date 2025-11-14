@@ -48,20 +48,51 @@ p{font-size:18px; line-height:1.6;}
 .letterBox{background:rgba(255,255,255,0.05);padding:18px;border-radius:12px;margin-top:20px}
 
 /* Envelope animation */
+#envelopeContainer{position:relative; display:none;}
+#openText{
+  position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+  font-family:'Playfair Display'; font-size:18px; color:var(--accent);
+  animation: pulse 1.5s infinite;
+}
 #envelope{
   width:200px; height:120px; margin:40px auto;
-  background:linear-gradient(145deg,#ff4d7a,#ff7aa0);
+  background:#ff4d7a;
   border-radius:6px; position:relative; cursor:pointer;
-  overflow:hidden; display:none;
+  overflow:hidden;
+  display:block;
+  transition: transform 0.5s ease;
 }
+/* Flap */
 #envelope:before{
-  content:""; position:absolute; top:0; left:0; width:0; height:0;
+  content:""; 
+  position:absolute; top:0; left:0; width:0; height:0;
   border-left:100px solid transparent;
   border-right:100px solid transparent;
-  border-bottom:60px solid #ff4d7a;
-  transition:all 1s ease;
+  border-bottom:60px solid #ff7aa0;
+  transform-origin: bottom center;
+  transition: transform 0.8s ease, opacity 0.8s ease;
 }
-#envelope.open:before{transform:translateY(-60px); opacity:0}
+/* Open flap */
+#envelope.open:before{
+  transform: rotateX(180deg) translateY(-60px);
+  opacity:0;
+}
+/* Bounce effect */
+#envelope.bounce{
+  animation: bounce 0.5s forwards;
+}
+/* Pulse text */
+@keyframes pulse{
+  0%,100%{ transform:translateX(-50%) scale(1); opacity:0.8; }
+  50%{ transform:translateX(-50%) scale(1.1); opacity:1; }
+}
+@keyframes bounce{
+  0%{ transform: translateY(0); }
+  30%{ transform: translateY(-10px); }
+  50%{ transform: translateY(0); }
+  70%{ transform: translateY(-5px); }
+  100%{ transform: translateY(0); }
+}
 
 /* Final Q&A */
 #finalQA{display:none; margin-top:20px;}
@@ -87,7 +118,10 @@ p{font-size:18px; line-height:1.6;}
   </div>
 
   <!-- Envelope animation -->
-  <div id="envelope"></div>
+  <div id="envelopeContainer">
+    <div id="openText">Open Me 💌</div>
+    <div id="envelope"></div>
+  </div>
 
   <!-- Main letter -->
   <div id="main">
@@ -99,7 +133,6 @@ p{font-size:18px; line-height:1.6;}
       <div class="signature" style="font-family:'Playfair Display';font-size:22px;color:var(--accent);margin-top:18px">
         — Your Kudrat
       </div>
-      <!-- Continue button added -->
       <button id="continueBtn" class="btn">Continue</button>
     </div>
   </div>
@@ -110,6 +143,14 @@ p{font-size:18px; line-height:1.6;}
     <button id="yesForever" class="btn">Yes 🥰❤️</button>
     <div id="finalEmoji"></div>
     <audio id="finalSong" src="final_song.mp3"></audio>
+    <div id="finalMessage" style="
+        display:none; 
+        margin-top:30px; 
+        font-size:28px; 
+        font-family:'Playfair Display'; 
+        color:var(--accent);
+        line-height:1.4;
+    "></div>
   </div>
 
   <!-- Background song -->
@@ -141,18 +182,23 @@ qs("loveSubmit").onclick = function(){
 /* Show envelope first */
 function showEnvelope(){
   qs("gate").style.display="none";
+  const envContainer = qs("envelopeContainer");
   const env = qs("envelope");
-  env.style.display = "block";
+  envContainer.style.display = "block";
 
   env.onclick = function(){
-    env.classList.add("open");
-    setTimeout(showLetter, 1200);
+    env.classList.add("bounce"); // small bounce on click
+    setTimeout(()=>{
+      env.classList.add("open"); // flap opens
+      setTimeout(showLetter, 1000); // show letter after flap animation
+    }, 200);
+    qs("openText").style.display = "none"; // hide "Open Me" text
   }
 }
 
 /* Show letter page */
 function showLetter(){
-  qs("envelope").style.display="none";
+  qs("envelopeContainer").style.display="none";
   const main = qs("main");
   main.style.display = "block";
   main.style.opacity = 1;
@@ -180,42 +226,67 @@ I love you so much, my forever… my bsf 💞👩‍❤️‍👨✨
   qs("bgSong").play().catch(()=>{});
 }
 
-// Manual continue to final Q&A
-qs("continueBtn").onclick = function(){
-  qs("main").style.display="none";
-  qs("finalQA").style.display="block";
-}
-
-// Final Q&A yes button
-qs("yesForever").onclick = function(){
-  qs("finalEmoji").textContent = "🥰💖🥳";
-  fadeSongs(qs("bgSong"), qs("finalSong"));
-}
-
-// Fade out old song and fade in new song
-function fadeSongs(oldSong, newSong){
-  let vol = oldSong.volume;
-  const fadeOut = setInterval(()=>{
+/* Fade functions */
+function fadeOutSong(song, callback){
+  let vol = song.volume;
+  const fade = setInterval(()=>{
     if(vol > 0.05){
       vol -= 0.05;
-      oldSong.volume = vol;
+      song.volume = vol;
     } else {
-      clearInterval(fadeOut);
-      oldSong.pause();
-      newSong.volume = 0;
-      newSong.play().catch(()=>{});
-      let newVol = 0;
-      const fadeIn = setInterval(()=>{
-        if(newVol < 1){
-          newVol += 0.05;
-          newSong.volume = newVol;
-        } else {
-          clearInterval(fadeIn);
-          newSong.volume = 1;
-        }
-      }, 100);
+      clearInterval(fade);
+      song.pause();
+      if(callback) callback();
     }
   }, 100);
+}
+
+function fadeInSong(song){
+  song.volume = 0;
+  song.play().catch(()=>{});
+  let vol = 0;
+  const fadeIn = setInterval(()=>{
+    if(vol < 1){
+      vol += 0.05;
+      song.volume = vol;
+    } else {
+      clearInterval(fadeIn);
+      song.volume = 1;
+    }
+  }, 100);
+}
+
+/* Continue button - fade bg song */
+qs("continueBtn").onclick = function(){
+  qs("main").style.display = "none";
+  qs("finalQA").style.display = "block";
+  fadeOutSong(qs("bgSong"));
+}
+
+/* Final Q&A yes button - animate message word by word */
+qs("yesForever").onclick = function(){
+  qs("finalEmoji").textContent = "🥰💖🥳";
+
+  fadeOutSong(qs("bgSong"), ()=>{
+    const finalSong = qs("finalSong");
+    finalSong.volume = 1;
+    finalSong.play().catch(()=>{});
+
+    const msgEl = qs("finalMessage");
+    msgEl.style.display = "block";
+    msgEl.textContent = "";
+
+    const text = "I love you so so so so so much my kuchupukoo ❤️";
+    const words = text.split(" ");
+    let i = 0;
+    const interval = setInterval(()=>{
+      msgEl.textContent += words[i] + " ";
+      i++;
+      if(i >= words.length){
+        clearInterval(interval);
+      }
+    }, 400); // adjust word speed
+  });
 }
 </script>
 </body>
